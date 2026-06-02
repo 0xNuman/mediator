@@ -1,18 +1,19 @@
-﻿using Mediator.Abstractions;
+using Mediator.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Mediator.Tests;
 
 public class MediatorSendTests
 {
+    public class UnhandledRequest : IRequest<string> { }
+
     [Fact]
     public async Task Send_ShouldResolveAndExecuteCorrectHandler()
     {
         // Arrange
-        var services = new ServiceCollection();
-        services.AddScoped<IRequestHandler<TestRequest, string>, TestRequestHandler>();
+        var services = new ServiceCollection().AddMediator();
         var serviceProvider = services.BuildServiceProvider();
-        var sut = new Mediator(serviceProvider);
+        var sut = serviceProvider.GetRequiredService<IMediator>();
         var request = new TestRequest { Message = "Hello, Mediator!" };
 
         // Act
@@ -26,11 +27,11 @@ public class MediatorSendTests
     public async Task Send_ShouldThrowException_WhenNoHandlerIsRegistered()
     {
         // Arrange
-        var services = new ServiceCollection(); // No handler registered
+        var services = new ServiceCollection().AddMediator();
         var serviceProvider = services.BuildServiceProvider();
 
-        var sut = new Mediator(serviceProvider);
-        var request = new TestRequest { Message = "This will fail" };
+        var sut = serviceProvider.GetRequiredService<IMediator>();
+        var request = new UnhandledRequest();
 
         // Act
         await Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.SendAsync(request));

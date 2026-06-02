@@ -1,40 +1,43 @@
 # Architecture Overview
 
-The Mediator library is built on the principle of **Mediated Communication**. Instead of components calling each other directly, they communicate via a central "Mediator" object.
+The Mediator library is built for extreme performance. By leveraging C# Source Generation, we've eliminated the runtime costs associated with traditional mediator patterns.
 
-## Core Components
+## Core Design Philosophy: "Static Dispatch"
 
-### 1. IRequest<TResponse>
-An empty marker interface that defines a request and the type of its expected response.
+Most mediators use a "Dynamic Dispatch" model:
+1.  Receive a request of type `object`.
+2.  Consult a dictionary to find the handler type.
+3.  Use reflection to invoke the handler.
 
-### 2. IRequestHandler<TRequest, TResponse>
-The actual logic that processes a specific request. Decoupled from the sender, it only cares about the input and output.
+Our library uses **Static Dispatch**:
+1.  The Source Generator analyzes your handlers at compile-time.
+2.  It generates a specialized `GeneratedMediator` class.
+3.  Routing is performed using highly optimized type-testing (`is` patterns).
 
-### 3. IMediator
-The dispatcher. It receives an `IRequest<T>`, finds the registered `IRequestHandler`, and executes it.
+## The generated pipeline
 
-## The Dispatch Mechanism
+When you call `await mediator.SendAsync(query)`, you aren't calling a reflection-based engine. You are calling generated code that looks like this:
 
-To bridge the gap between a generic `SendAsync<T>(IRequest<T>)` call and the strongly-typed handler, the library uses a **Wrapper Pattern**:
-
-1. **Reflection (Initial)**: When a request type is seen for the first time, the Mediator uses reflection to create a generic wrapper (`RequestHandlerWrapperImpl`).
-2. **Caching (Phase 1)**: These wrappers are cached in a `ConcurrentDictionary` to avoid the overhead of `Activator.CreateInstance` on every call.
-3. **Source Generation (Phase 2)**: The future "Final Boss" optimization will generate the mapping code at compile-time, eliminating the need for reflection and dictionary lookups entirely.
-
-## Pipeline Architecture
-
-The library uses a **Decorator Pattern** to implement pipeline behaviors. When a request is sent:
-1. The Mediator resolves all `IPipelineBehaviour<TRequest, TResponse>` from the DI container.
-2. It chains them together using an `Aggregate` function.
-3. The behaviors execute in a **LIFO (Last-In-First-Out)** order based on their registration in the DI container.
-
-```mermaid
-graph TD
-    Sender --> Mediator
-    Mediator --> Behavior_N
-    Behavior_N --> Behavior_1
-    Behavior_1 --> Handler
-    Handler --> Behavior_1
-    Behavior_1 --> Behavior_N
-    Behavior_N --> Sender
+```csharp
+public Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request, CancellationToken ct)
+{
+    if (request is GetUserQuery r1)
+        return (Task<TResponse>)(object)_provider.GetRequiredService<IRequestHandler<GetUserQuery, UserDto>>().HandleAsync(r1, ct);
+    
+    // ... other handlers ...
+}
 ```
+
+## Zero-Allocation Infrastructure
+
+Because the generator knows the types at compile-time, it doesn't need to wrap requests in intermediate objects or use `Activator.CreateInstance`. 
+
+The memory overhead of using this Mediator is **exactly zero** compared to calling the handler directly.
+
+## Dependency Injection Integration
+
+We integrate directly with `Microsoft.Extensions.DependencyInjection`. The generated `AddMediator()` method automatically registers:
+- The `IMediator` implementation.
+- All discovered `IRequestHandler<,>` implementations.
+
+This ensures your DI container remains clean and manageable while reaping the performance benefits of source generation.

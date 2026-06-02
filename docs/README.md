@@ -18,7 +18,9 @@ Welcome to the official documentation for the Mediator library—a high-performa
    - How to install, register, and send your first request.
 3. [Pipeline Behaviors](usage/pipeline-behaviors.md)
    - How to intercept requests and implement global logic.
-4. [Source Generation (Experimental)](architecture/source-generation.md)
+4. [Configuration](usage/configuration.md)
+   - How to customize the generated namespace with `MediatorOptions`.
+5. [Source Generation](architecture/source-generation.md)
    - Deep dive into how we achieve near-zero overhead.
 
 ## 🛠 Project Structure

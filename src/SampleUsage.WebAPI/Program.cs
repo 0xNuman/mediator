@@ -1,5 +1,4 @@
 using Mediator.Abstractions;
-using Mediator.Generated;
 using Microsoft.AspNetCore.Mvc;
 using SampleUsage.WebAPI.Application.Weather.Queries;
 
@@ -7,10 +6,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-// Add Generated Mediator (Source Generated)
-builder.Services.AddGeneratedMediator();
+// Add High-Performance Mediator (Source Generated)
+builder.Services.AddMediator();
 
-// Add FluentValidation from Mediator.Extensions.FluentValidation
+// Add FluentValidation support
 builder.Services.AddFluentValidation();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

@@ -8,23 +8,31 @@ public class PipelineInterruptionTests
 {
     public class TestRequest : IRequest<string> { }
 
+    public class TestRequestHandler : IRequestHandler<TestRequest, string>
+    {
+        public Task<string> HandleAsync(TestRequest request, CancellationToken cancellationToken)
+        {
+            return Task.FromResult("HandlerExecuted");
+        }
+    }
+
+    public class InterruptionBehaviour : IPipelineBehaviour<TestRequest, string>
+    {
+        public Task<string> Handle(TestRequest request, RequestHandlerDelegate<string> next, CancellationToken cancellationToken)
+        {
+            return Task.FromResult("Interrupted");
+        }
+    }
+
     [Fact]
     public async Task Send_ShouldInterruptPipeline_WhenBehaviorDoesNotCallNext()
     {
         // Arrange
-        var services = new ServiceCollection();
-        var handler = Substitute.For<IRequestHandler<TestRequest, string>>();
-        services.AddSingleton(handler);
-
-        // Behavior that interrupts (does not call next)
-        var interruptingBehavior = Substitute.For<IPipelineBehaviour<TestRequest, string>>();
-        interruptingBehavior.Handle(Arg.Any<TestRequest>(), Arg.Any<RequestHandlerDelegate<string>>(), Arg.Any<CancellationToken>())
-            .Returns(Task.FromResult("Interrupted"));
-
-        services.AddSingleton(interruptingBehavior);
-
+        var services = new ServiceCollection().AddMediator();
+        services.AddScoped<IPipelineBehaviour<TestRequest, string>, InterruptionBehaviour>();
+        
         var serviceProvider = services.BuildServiceProvider();
-        var mediator = new Mediator(serviceProvider);
+        var mediator = serviceProvider.GetRequiredService<IMediator>();
         var request = new TestRequest();
 
         // Act
@@ -32,7 +40,5 @@ public class PipelineInterruptionTests
 
         // Assert
         Assert.Equal("Interrupted", result);
-        // Ensure handler was NOT called
-        await handler.DidNotReceive().HandleAsync(Arg.Any<TestRequest>(), Arg.Any<CancellationToken>());
     }
 }

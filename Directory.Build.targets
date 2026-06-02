@@ -1,0 +1,12 @@
+<Project>
+  <!-- 
+    Professional MSBuild logic to flow the Mediator Source Generator 
+    automatically to any project that references the Mediator project.
+  -->
+  <ItemGroup Condition="'$(ProjectName)' != 'Mediator' AND '$(ProjectName)' != 'Mediator.SourceGenerator' AND '$(ProjectName)' != 'Mediator.Abstractions'">
+    <ProjectReference Include="$(MSBuildThisFileDirectory)src/Mediator.SourceGenerator/Mediator.SourceGenerator.csproj" 
+                      OutputItemType="Analyzer" 
+                      ReferenceOutputAssembly="false" 
+                      Condition="@(ProjectReference->AnyHaveMetadataValue('FileName', 'Mediator'))" />
+  </ItemGroup>
+</Project>
