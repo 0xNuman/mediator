@@ -1,7 +1,5 @@
 using FluentValidation;
 using Mediator.Abstractions;
-using Mediator.Extensions.FluentValidation;
-using NSubstitute;
 
 namespace Mediator.Extensions.FluentValidation.Tests;
 
