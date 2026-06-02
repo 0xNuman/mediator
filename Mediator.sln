@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mediator.Extensions.FluentV
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mediator.Abstractions", "src\Mediator.Abstractions\Mediator.Abstractions.csproj", "{51AD8522-F2B0-443B-961A-BCCF95AD0301}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mediator.Benchmarks", "test\Mediator.Benchmarks\Mediator.Benchmarks.csproj", "{2272177B-E2A5-4C84-A538-DB480AEAA318}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,18 @@ Global
 		{51AD8522-F2B0-443B-961A-BCCF95AD0301}.Release|x64.Build.0 = Release|Any CPU
 		{51AD8522-F2B0-443B-961A-BCCF95AD0301}.Release|x86.ActiveCfg = Release|Any CPU
 		{51AD8522-F2B0-443B-961A-BCCF95AD0301}.Release|x86.Build.0 = Release|Any CPU
+		{2272177B-E2A5-4C84-A538-DB480AEAA318}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2272177B-E2A5-4C84-A538-DB480AEAA318}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2272177B-E2A5-4C84-A538-DB480AEAA318}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2272177B-E2A5-4C84-A538-DB480AEAA318}.Debug|x64.Build.0 = Debug|Any CPU
+		{2272177B-E2A5-4C84-A538-DB480AEAA318}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2272177B-E2A5-4C84-A538-DB480AEAA318}.Debug|x86.Build.0 = Debug|Any CPU
+		{2272177B-E2A5-4C84-A538-DB480AEAA318}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2272177B-E2A5-4C84-A538-DB480AEAA318}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2272177B-E2A5-4C84-A538-DB480AEAA318}.Release|x64.ActiveCfg = Release|Any CPU
+		{2272177B-E2A5-4C84-A538-DB480AEAA318}.Release|x64.Build.0 = Release|Any CPU
+		{2272177B-E2A5-4C84-A538-DB480AEAA318}.Release|x86.ActiveCfg = Release|Any CPU
+		{2272177B-E2A5-4C84-A538-DB480AEAA318}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,5 +111,6 @@ Global
 		{A332D765-A545-400C-B6E7-42091E9F025F} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{0477C7E9-09EB-4E20-A2B6-56ABE4A18B8E} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{51AD8522-F2B0-443B-961A-BCCF95AD0301} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{2272177B-E2A5-4C84-A538-DB480AEAA318} = {0C88DD14-F956-CE84-757C-A364CCF449FC}
 	EndGlobalSection
 EndGlobal
