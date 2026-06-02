@@ -15,6 +15,7 @@
   </Folder>
   <Folder Name="/test/">
     <Project Path="test/Mediator.Benchmarks/Mediator.Benchmarks.csproj" />
+    <Project Path="test/Mediator.Extensions.FluentValidation.Tests/Mediator.Extensions.FluentValidation.Tests.csproj" />
     <Project Path="test/Mediator.Tests/Mediator.Tests.csproj" />
   </Folder>
 </Solution>
