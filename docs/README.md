@@ -26,7 +26,9 @@ Welcome to the official documentation for the Mediator library—a high-performa
    - How to customize the generated namespace with `MediatorOptions`.
 7. [Compiler Diagnostics](usage/diagnostics.md)
    - Real-time IDE feedback for configuration errors.
-8. [Source Generation](architecture/source-generation.md)
+8. [Analyzer Release Tracking](architecture/analyzer-release-tracking.md)
+   - How to manage diagnostic rule versions for production.
+9. [Source Generation](architecture/source-generation.md)
    - Deep dive into how we achieve near-zero overhead.
 
 ## 🛠 Project Structure
