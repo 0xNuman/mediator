@@ -22,7 +22,9 @@ Welcome to the official documentation for the Mediator library—a high-performa
    - How to intercept requests and implement global logic.
 5. [Configuration](usage/configuration.md)
    - How to customize the generated namespace with `MediatorOptions`.
-6. [Source Generation](architecture/source-generation.md)
+6. [Compiler Diagnostics](usage/diagnostics.md)
+   - Real-time IDE feedback for configuration errors.
+7. [Source Generation](architecture/source-generation.md)
    - Deep dive into how we achieve near-zero overhead.
 
 ## 🛠 Project Structure

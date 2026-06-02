@@ -12,6 +12,7 @@ Most Mediator implementations (like MediatR) rely on runtime reflection, diction
 - **Compile-time Dispatch**: No reflection. No runtime overhead.
 - **Zero Memory Allocations**: No request wrappers or task-redirection overhead.
 - **Strictly Source-Generated**: No hybrid modes or fallbacks. Performance is the only option.
+- **Pro Compiler Diagnostics**: Catch configuration errors (ambiguous/missing handlers) at compile-time.
 - **Full Pipeline Support**: Robust support for `IPipelineBehaviour` without sacrificing speed.
 
 ### 📊 Performance Benchmark
@@ -68,7 +69,9 @@ await mediator.PublishAsync(new UserCreated(user.Id));
 - [**Getting Started**](docs/usage/getting-started.md) - Full setup guide.
 - [**Notifications**](docs/usage/notifications.md) - Implementing event-driven systems (Pub/Sub).
 - [**Pipeline Behaviors**](docs/usage/pipeline-behaviors.md) - Cross-cutting concerns (logging, validation).
+- [**Compiler Diagnostics**](docs/usage/diagnostics.md) - Real-time build-time error catching.
 - [**Configuration**](docs/usage/configuration.md) - Customizing namespaces.
+- [**Performance Metrics**](docs/architecture/source-generation.md) - Detailed breakdown of why we are 12x faster.
 
 ## 🤝 Contributing
 

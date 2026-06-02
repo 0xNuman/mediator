@@ -1,7 +1,9 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Text;
 
 namespace Mediator.SourceGenerator
@@ -11,20 +13,29 @@ namespace Mediator.SourceGenerator
     {
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
+            // 1. Discover Handlers
             var registrations = context.SyntaxProvider
                 .CreateSyntaxProvider(
                     predicate: static (s, _) => s is ClassDeclarationSyntax { BaseList: not null },
                     transform: static (ctx, _) => GetRegistrationInfo(ctx))
                 .Where(static m => m is not null);
 
+            // 2. Discover Requests
+            var requests = context.SyntaxProvider
+                .CreateSyntaxProvider(
+                    predicate: static (s, _) => s is ClassDeclarationSyntax or RecordDeclarationSyntax { BaseList: not null },
+                    transform: static (ctx, _) => GetRequestInfo(ctx))
+                .Where(static m => m is not null);
+
             var assemblyName = context.CompilationProvider.Select(static (c, _) => c.AssemblyName);
             var options = context.CompilationProvider.Select(static (c, _) => GetOptions(c));
 
             var combined = registrations.Collect()
+                .Combine(requests.Collect())
                 .Combine(assemblyName)
                 .Combine(options);
 
-            context.RegisterSourceOutput(combined, Execute);
+            context.RegisterSourceOutput(combined, (ctx, source) => Execute(ctx, source.Left.Left.Left, source.Left.Left.Right, source.Left.Right, source.Right));
         }
 
         private static string GetOptions(Compilation compilation)
@@ -61,7 +72,8 @@ namespace Mediator.SourceGenerator
                         RegistrationType.Request,
                         typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
                         interfaceSymbol.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
-                        interfaceSymbol.TypeArguments[1].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
+                        interfaceSymbol.TypeArguments[1].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+                        classDeclaration.GetLocation()
                     ));
                 }
                 else if (interfaceSymbol.Name == "INotificationHandler" && interfaceSymbol.TypeArguments.Length == 1)
@@ -70,7 +82,8 @@ namespace Mediator.SourceGenerator
                         RegistrationType.Notification,
                         typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
                         interfaceSymbol.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
-                        null
+                        null,
+                        classDeclaration.GetLocation()
                     ));
                 }
             }
@@ -78,13 +91,76 @@ namespace Mediator.SourceGenerator
             return registrations.Count > 0 ? new RegistrationInfo(registrations) : null;
         }
 
-        private static void Execute(SourceProductionContext context, ((ImmutableArray<RegistrationInfo?> Registrations, string? AssemblyName) Left, string GeneratedNamespace) input)
+        private static RequestInfo? GetRequestInfo(GeneratorSyntaxContext context)
         {
-            var registrations = input.Left.Registrations.Where(r => r != null).SelectMany(r => r!.Mappings).ToList();
-            var assemblyName = input.Left.AssemblyName ?? "UnknownAssembly";
-            var generatedNamespace = input.GeneratedNamespace;
+            var declaration = (TypeDeclarationSyntax)context.Node;
+            var model = context.SemanticModel;
+            var typeSymbol = model.GetDeclaredSymbol(declaration) as INamedTypeSymbol;
+
+            if (typeSymbol == null || typeSymbol.IsAbstract) return null;
+
+            foreach (var interfaceSymbol in typeSymbol.AllInterfaces)
+            {
+                if (interfaceSymbol.Name == "IRequest" && interfaceSymbol.TypeArguments.Length == 1)
+                {
+                    return new RequestInfo(
+                        typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+                        declaration.GetLocation()
+                    );
+                }
+            }
+
+            return null;
+        }
+
+        private static void Execute(
+            SourceProductionContext context, 
+            ImmutableArray<RegistrationInfo?> registrationsInput, 
+            ImmutableArray<RequestInfo?> requestsInput, 
+            string? assemblyName, 
+            string generatedNamespace)
+        {
+            var registrations = registrationsInput.Where(r => r != null).SelectMany(r => r!.Mappings).ToList();
+            var discoveredRequests = requestsInput.Where(r => r != null).Cast<RequestInfo>().ToList();
 
             if (assemblyName == "Mediator" || assemblyName == "Mediator.Abstractions") return;
+
+            // --- Validation Phase ---
+            
+            // MED001: Multiple handlers for same request
+            var requestHandlers = registrations.Where(r => r.Type == RegistrationType.Request)
+                .GroupBy(r => r.MessageType)
+                .Where(g => g.Count() > 1);
+
+            foreach (var group in requestHandlers)
+            {
+                var handlers = string.Join(", ", group.Select(h => h.HandlerType));
+                foreach (var reg in group)
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(
+                        Diagnostics.MultipleHandlersError,
+                        reg.Location,
+                        group.Key,
+                        handlers));
+                }
+            }
+
+            // MED002: Request has no handler
+            var handledRequestTypes = registrations.Where(r => r.Type == RegistrationType.Request).Select(r => r.MessageType).ToImmutableHashSet();
+            foreach (var req in discoveredRequests)
+            {
+                if (!handledRequestTypes.Contains(req.RequestType))
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(
+                        Diagnostics.MissingHandlerWarning,
+                        req.Location,
+                        req.RequestType));
+                }
+            }
+
+            // --- Generation Phase ---
+
+            var validHandlers = registrations.ToList();
 
             var sb = new StringBuilder();
             sb.AppendLine("// <auto-generated/>");
@@ -107,7 +183,7 @@ namespace Mediator.SourceGenerator
             sb.AppendLine();
             sb.AppendLine($"            services.AddScoped<IMediator, global::{generatedNamespace}.GeneratedMediator>();");
             
-            foreach (var reg in registrations)
+            foreach (var reg in validHandlers)
             {
                 if (reg.Type == RegistrationType.Request)
                     sb.AppendLine($"            services.AddScoped<IRequestHandler<{reg.MessageType}, {reg.ResponseType}>, {reg.HandlerType}>();");
@@ -136,12 +212,12 @@ namespace Mediator.SourceGenerator
             sb.AppendLine("            if (request == null) throw new ArgumentNullException(nameof(request));");
             sb.AppendLine();
 
-            var requests = registrations.Where(r => r.Type == RegistrationType.Request).ToList();
+            var requests = validHandlers.Where(r => r.Type == RegistrationType.Request).ToList();
             foreach (var req in requests)
             {
-                sb.AppendLine($"            if (request is {req.MessageType} r{requests.IndexOf(req)})");
+                sb.AppendLine($"            if (request is {req.MessageType} r{validHandlers.IndexOf(req)})");
                 sb.AppendLine("            {");
-                sb.AppendLine($"                var result = await HandleRequestAsync<{req.MessageType}, {req.ResponseType}>(r{requests.IndexOf(req)}, cancellationToken);");
+                sb.AppendLine($"                var result = await HandleRequestAsync<{req.MessageType}, {req.ResponseType}>(r{validHandlers.IndexOf(req)}, cancellationToken);");
                 sb.AppendLine($"                return (TResponse)(object)result;");
                 sb.AppendLine("            }");
             }
@@ -155,7 +231,7 @@ namespace Mediator.SourceGenerator
             sb.AppendLine("            if (notification == null) throw new ArgumentNullException(nameof(notification));");
             sb.AppendLine();
 
-            var notifications = registrations.Where(r => r.Type == RegistrationType.Notification).GroupBy(r => r.MessageType).ToList();
+            var notifications = validHandlers.Where(r => r.Type == RegistrationType.Notification).GroupBy(r => r.MessageType).ToList();
             foreach (var group in notifications)
             {
                 var notificationType = group.Key;
@@ -194,7 +270,8 @@ namespace Mediator.SourceGenerator
         }
 
         private record RegistrationInfo(List<MappingInfo> Mappings);
-        private record MappingInfo(RegistrationType Type, string HandlerType, string MessageType, string? ResponseType);
+        private record MappingInfo(RegistrationType Type, string HandlerType, string MessageType, string? ResponseType, Location Location);
+        private record RequestInfo(string RequestType, Location Location);
         private enum RegistrationType { Request, Notification }
     }
 }
