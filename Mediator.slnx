@@ -1,0 +1,20 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Mediator.Abstractions/Mediator.Abstractions.csproj" />
+    <Project Path="src/Mediator.Extensions.FluentValidation/Mediator.Extensions.FluentValidation.csproj" />
+    <Project Path="src/Mediator/Mediator.csproj" />
+    <Project Path="src/SampleUsage.WebAPI/SampleUsage.WebAPI.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test/Mediator.Benchmarks/Mediator.Benchmarks.csproj" />
+    <Project Path="test/Mediator.Tests/Mediator.Tests.csproj" />
+  </Folder>
+</Solution>
