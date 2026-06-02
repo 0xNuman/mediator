@@ -10,6 +10,7 @@
   <Folder Name="/src/">
     <Project Path="src/Mediator.Abstractions/Mediator.Abstractions.csproj" />
     <Project Path="src/Mediator.Extensions.FluentValidation/Mediator.Extensions.FluentValidation.csproj" />
+    <Project Path="src/Mediator.SourceGenerator/Mediator.SourceGenerator.csproj" />
     <Project Path="src/Mediator/Mediator.csproj" />
     <Project Path="src/SampleUsage.WebAPI/SampleUsage.WebAPI.csproj" />
   </Folder>
