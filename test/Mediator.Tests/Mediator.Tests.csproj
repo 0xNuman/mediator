@@ -9,11 +9,11 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection"/>
-        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
-        <PackageReference Include="NSubstitute"/>
-        <PackageReference Include="NSubstitute.Analyzers.CSharp"/>
-        <PackageReference Include="xunit"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="NSubstitute" />
+        <PackageReference Include="NSubstitute.Analyzers.CSharp" />
+        <PackageReference Include="xunit" />
         <PackageReference Include="xunit.runner.visualstudio">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -21,12 +21,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Using Include="Xunit"/>
+        <Using Include="Xunit" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Mediator\Mediator.csproj"/>
-        <ProjectReference Include="..\..\src\Mediator.Extensions.FluentValidation\Mediator.Extensions.FluentValidation.csproj"/>
+        <ProjectReference Include="..\..\src\Mediator\Mediator.csproj" />
+        <ProjectReference Include="..\..\src\Mediator.Extensions.FluentValidation\Mediator.Extensions.FluentValidation.csproj" />
     </ItemGroup>
 
 </Project>

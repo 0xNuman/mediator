@@ -6,11 +6,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-// Add High-Performance Mediator (Source Generated)
-builder.Services.AddMediator();
-
-// Add FluentValidation support
-builder.Services.AddFluentValidation();
+// Add High-Performance Mediator (Source Generated) with Extensions
+builder.Services.AddMediator()
+    .AddFluentValidation()
+    .AddOpenTelemetry();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

@@ -5,10 +5,12 @@ namespace Mediator.Extensions.FluentValidation.Tests;
 
 public class ValidationBehaviourTests
 {
+#pragma warning disable MED002
     public class TestRequest : IRequest<string>
     {
         public string Name { get; set; } = string.Empty;
     }
+#pragma warning restore MED002
 
     public class TestRequestValidator : AbstractValidator<TestRequest>
     {

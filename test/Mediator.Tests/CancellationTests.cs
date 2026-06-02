@@ -22,7 +22,7 @@ public class CancellationTests
     public async Task Send_ShouldPropagateCancellationToken_ToHandler()
     {
         // Arrange
-        var services = new ServiceCollection().AddMediator();
+        var builder = new ServiceCollection().AddMediator(); var services = builder.Services;
         var mockHandler = Substitute.For<IProxyTarget>();
         services.AddSingleton(mockHandler);
         services.AddScoped<IRequestHandler<TestRequest, string>, TestRequestHandler>();
@@ -45,7 +45,7 @@ public class CancellationTests
     public async Task Send_ShouldPropagateCancellationToken_ToBehaviors()
     {
         // Arrange
-        var services = new ServiceCollection().AddMediator();
+        var builder = new ServiceCollection().AddMediator(); var services = builder.Services;
         var mockHandler = Substitute.For<IProxyTarget>();
         services.AddSingleton(mockHandler);
         services.AddScoped<IRequestHandler<TestRequest, string>, TestRequestHandler>();

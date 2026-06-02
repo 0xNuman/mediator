@@ -20,11 +20,13 @@ Welcome to the official documentation for the Mediator library—a high-performa
    - Broadcast messages to multiple handlers (Pub/Sub).
 4. [Pipeline Behaviors](usage/pipeline-behaviors.md)
    - How to intercept requests and implement global logic.
-5. [Configuration](usage/configuration.md)
+5. [OpenTelemetry](usage/opentelemetry.md)
+   - Distributed tracing and observability for your message pipeline.
+6. [Configuration](usage/configuration.md)
    - How to customize the generated namespace with `MediatorOptions`.
-6. [Compiler Diagnostics](usage/diagnostics.md)
+7. [Compiler Diagnostics](usage/diagnostics.md)
    - Real-time IDE feedback for configuration errors.
-7. [Source Generation](architecture/source-generation.md)
+8. [Source Generation](architecture/source-generation.md)
    - Deep dive into how we achieve near-zero overhead.
 
 ## 🛠 Project Structure
@@ -32,4 +34,5 @@ Welcome to the official documentation for the Mediator library—a high-performa
 - `src/Mediator.Abstractions`: Core interfaces.
 - `src/Mediator`: Main implementation.
 - `src/Mediator.Extensions.FluentValidation`: Validation support.
+- `src/Mediator.Extensions.OpenTelemetry`: Observability support.
 - `src/Mediator.SourceGenerator`: Compile-time optimizations.

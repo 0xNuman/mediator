@@ -10,6 +10,7 @@
   <Folder Name="/src/">
     <Project Path="src/Mediator.Abstractions/Mediator.Abstractions.csproj" />
     <Project Path="src/Mediator.Extensions.FluentValidation/Mediator.Extensions.FluentValidation.csproj" />
+    <Project Path="src/Mediator.Extensions.OpenTelemetry/Mediator.Extensions.OpenTelemetry.csproj" />
     <Project Path="src/Mediator.SourceGenerator/Mediator.SourceGenerator.csproj" />
     <Project Path="src/Mediator/Mediator.csproj" />
     <Project Path="src/SampleUsage.WebAPI/SampleUsage.WebAPI.csproj" />
@@ -17,6 +18,7 @@
   <Folder Name="/test/">
     <Project Path="test/Mediator.Benchmarks/Mediator.Benchmarks.csproj" />
     <Project Path="test/Mediator.Extensions.FluentValidation.Tests/Mediator.Extensions.FluentValidation.Tests.csproj" />
+    <Project Path="test/Mediator.Extensions.OpenTelemetry.Tests/Mediator.Extensions.OpenTelemetry.Tests.csproj" />
     <Project Path="test/Mediator.Tests/Mediator.Tests.csproj" />
   </Folder>
 </Solution>

@@ -176,10 +176,10 @@ namespace Mediator.SourceGenerator
             sb.AppendLine("{");
             sb.AppendLine("    public static class MediatorRegistrationExtensions");
             sb.AppendLine("    {");
-            sb.AppendLine("        public static IServiceCollection AddMediator(this IServiceCollection services)");
+            sb.AppendLine("        public static IMediatorBuilder AddMediator(this IServiceCollection services)");
             sb.AppendLine("        {");
             sb.AppendLine("            if (services.Any(d => d.ServiceType == typeof(IMediator)))");
-            sb.AppendLine("                return services;");
+            sb.AppendLine("                return new MediatorBuilder(services);");
             sb.AppendLine();
             sb.AppendLine($"            services.AddScoped<IMediator, global::{generatedNamespace}.GeneratedMediator>();");
             
@@ -191,8 +191,15 @@ namespace Mediator.SourceGenerator
                     sb.AppendLine($"            services.AddScoped<INotificationHandler<{reg.MessageType}>, {reg.HandlerType}>();");
             }
 
-            sb.AppendLine("            return services;");
+            sb.AppendLine();
+            sb.AppendLine("            return new MediatorBuilder(services);");
             sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine();
+            sb.AppendLine("    internal class MediatorBuilder : IMediatorBuilder");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public MediatorBuilder(IServiceCollection services) => Services = services;");
+            sb.AppendLine("        public IServiceCollection Services { get; }");
             sb.AppendLine("    }");
             sb.AppendLine("}");
             sb.AppendLine();

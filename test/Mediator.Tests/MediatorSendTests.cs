@@ -11,7 +11,7 @@ public class MediatorSendTests
     public async Task Send_ShouldResolveAndExecuteCorrectHandler()
     {
         // Arrange
-        var services = new ServiceCollection().AddMediator();
+        var builder = new ServiceCollection().AddMediator(); var services = builder.Services;
         var serviceProvider = services.BuildServiceProvider();
         var sut = serviceProvider.GetRequiredService<IMediator>();
         var request = new TestRequest { Message = "Hello, Mediator!" };
@@ -27,7 +27,7 @@ public class MediatorSendTests
     public async Task Send_ShouldThrowException_WhenNoHandlerIsRegistered()
     {
         // Arrange
-        var services = new ServiceCollection().AddMediator();
+        var builder = new ServiceCollection().AddMediator(); var services = builder.Services;
         var serviceProvider = services.BuildServiceProvider();
 
         var sut = serviceProvider.GetRequiredService<IMediator>();

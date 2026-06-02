@@ -11,7 +11,7 @@ public class PipelineBehaviourTests
         // Arrange
         var executionTracker = new List<string>();
 
-        var services = new ServiceCollection().AddMediator();
+        var builder = new ServiceCollection().AddMediator(); var services = builder.Services;
         services.AddScoped<IRequestHandler<TestRequest, string>, TestRequestHandler>();
 
         // Register behaviors. The DI container will provide them in the order they are registered.

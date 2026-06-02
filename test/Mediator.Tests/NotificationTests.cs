@@ -32,7 +32,7 @@ public class NotificationTests
     public async Task Publish_ShouldExecuteAllRegisteredHandlers()
     {
         // Arrange
-        var services = new ServiceCollection().AddMediator();
+        var builder = new ServiceCollection().AddMediator(); var services = builder.Services;
         // The generator will find NotificationHandler1 and NotificationHandler2 
         // and register them automatically in AddMediator()
         

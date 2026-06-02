@@ -27,7 +27,7 @@ public class PipelineInterruptionTests
     public async Task Send_ShouldInterruptPipeline_WhenBehaviorDoesNotCallNext()
     {
         // Arrange
-        var services = new ServiceCollection().AddMediator();
+        var builder = new ServiceCollection().AddMediator(); var services = builder.Services;
         services.AddScoped<IPipelineBehaviour<TestRequest, string>, InterruptionBehaviour>();
         
         var serviceProvider = services.BuildServiceProvider();
