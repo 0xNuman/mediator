@@ -16,11 +16,13 @@ Welcome to the official documentation for the Mediator library—a high-performa
    - Understand the core design, the Request-Response bridge, and the Pipeline mechanism.
 2. [Getting Started](usage/getting-started.md)
    - How to install, register, and send your first request.
-3. [Pipeline Behaviors](usage/pipeline-behaviors.md)
+3. [Notifications](usage/notifications.md)
+   - Broadcast messages to multiple handlers (Pub/Sub).
+4. [Pipeline Behaviors](usage/pipeline-behaviors.md)
    - How to intercept requests and implement global logic.
-4. [Configuration](usage/configuration.md)
+5. [Configuration](usage/configuration.md)
    - How to customize the generated namespace with `MediatorOptions`.
-5. [Source Generation](architecture/source-generation.md)
+6. [Source Generation](architecture/source-generation.md)
    - Deep dive into how we achieve near-zero overhead.
 
 ## 🛠 Project Structure

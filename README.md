@@ -40,27 +40,35 @@ public record GetUserQuery(Guid Id) : IRequest<UserDto>;
 ```csharp
 public class GetUserHandler : IRequestHandler<GetUserQuery, UserDto>
 {
-    public async Task<UserDto> HandleAsync(GetUserQuery request, CancellationToken ct)
-    {
-        return new UserDto("John Doe");
-    }
+    public async Task<UserDto> HandleAsync(GetUserQuery request, CancellationToken ct) => new UserDto("John Doe");
 }
 ```
 
-3. **Register & Use**
+3. **(Optional) Define a Notification & Multiple Handlers**
 ```csharp
-// Inside Program.cs
-builder.Services.AddMediator(); // No reflection! Discovers handlers at compile-time.
-
-// Inject IMediator and send
-var user = await mediator.SendAsync(new GetUserQuery(id));
+public record UserCreated(Guid Id) : INotification;
+public class EmailHandler : INotificationHandler<UserCreated> { /* ... */ }
+public class AuditHandler : INotificationHandler<UserCreated> { /* ... */ }
 ```
 
-## 📖 In-Depth Documentation
+4. **Register & Use**
+```csharp
+builder.Services.AddMediator();
 
-- [**Architecture Overview**](docs/architecture/overview.md) - Deep dive into Static Dispatch vs. Dynamic Dispatch.
-- [**Pipeline Behaviors**](docs/usage/pipeline-behaviors.md) - How to implement global logging, validation, and more.
-- [**Performance Metrics**](docs/architecture/source-generation.md) - Detailed breakdown of why we are 12x faster.
+// Send a request
+var user = await mediator.SendAsync(new GetUserQuery(id));
+
+// Publish a notification
+await mediator.PublishAsync(new UserCreated(user.Id));
+```
+
+## 📖 Detailed Documentation
+
+- [**Architecture Overview**](docs/architecture/overview.md) - Static Dispatch vs. Dynamic Dispatch.
+- [**Getting Started**](docs/usage/getting-started.md) - Full setup guide.
+- [**Notifications**](docs/usage/notifications.md) - Implementing event-driven systems (Pub/Sub).
+- [**Pipeline Behaviors**](docs/usage/pipeline-behaviors.md) - Cross-cutting concerns (logging, validation).
+- [**Configuration**](docs/usage/configuration.md) - Customizing namespaces.
 
 ## 🤝 Contributing
 

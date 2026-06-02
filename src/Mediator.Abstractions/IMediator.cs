@@ -13,4 +13,12 @@ public interface IMediator
     /// <typeparam name="TResponse"></typeparam>
     /// <returns></returns>
     Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Publishes a notification to all registered handlers.
+    /// </summary>
+    /// <param name="notification"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task PublishAsync(INotification notification, CancellationToken cancellationToken = default);
 }

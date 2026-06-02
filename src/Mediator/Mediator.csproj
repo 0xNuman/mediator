@@ -5,14 +5,14 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Mediator.Abstractions\Mediator.Abstractions.csproj" />
-      <ProjectReference Include="..\Mediator.SourceGenerator\Mediator.SourceGenerator.csproj" 
-                        OutputItemType="Analyzer" 
-                        ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Mediator.Abstractions\Mediator.Abstractions.csproj"/>
+        <ProjectReference Include="..\Mediator.SourceGenerator\Mediator.SourceGenerator.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"/>
     </ItemGroup>
 
     <ItemGroup>
         <InternalsVisibleTo Include="Mediator.Tests"/>
     </ItemGroup>
-    
+
 </Project>

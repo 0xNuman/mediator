@@ -1,6 +1,5 @@
 using Mediator.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
-using NSubstitute;
 
 namespace Mediator.Tests;
 
